@@ -29,13 +29,16 @@
  * (2)initialize and start the user application by the user
  * initial task.
  */
+void tsk1(INT stacd, void* exinf);
+void tsk2(INT stacd, void* exinf);
+
+void print_err(UB* str, ER err);
 
 #if USE_TMONITOR
 #define TM_PUTSTRING(a)	tm_putstring(a)
 
-void print_err( UB* str, ER err)
-{
-	tm_printf(str, err);
+void print_err(UB* str, ER err) {
+    tm_printf(str, err);
 }
 
 #else
@@ -50,11 +53,10 @@ void print_err( UB* str, INT par) {}
  * User Task-1 Definition
  *
  */
-void tsk1(INT stacd, void *exinf)
-{
-	TM_PUTSTRING((UB*)"Start Task-1\n");
+void tsk1(INT stacd, void* exinf) {
+    TM_PUTSTRING((UB* )"Start Task-1\n");
 
-	tk_exd_tsk();	/* Exit task */
+    tk_exd_tsk(); /* Exit task */
 }
 
 /* ---------------------------------------------------------
@@ -62,11 +64,10 @@ void tsk1(INT stacd, void *exinf)
  * User Task-2 Definition
  *
  */
-void tsk2(INT stacd, void *exinf)
-{
-	TM_PUTSTRING((UB*)"Start Task-2\n");
+void tsk2(INT stacd, void* exinf) {
+    TM_PUTSTRING((UB* )"Start Task-2\n");
 
-	tk_exd_tsk();	/* Exit Task */
+    tk_exd_tsk(); /* Exit Task */
 }
 
 const T_CTSK	ctsk1	= {0, (TA_HLNG | TA_RNG3), &tsk1, 10, 1024, 0};

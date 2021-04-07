@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"peripheralpins.h": "c",
+			"mbed_toolchain.h": "c",
+			"mbed_preprocessor.h": "c",
+			"pinmap.h": "c",
+			"tkernel.h": "c",
+			"kernel.h": "c",
+			"machine.h": "c",
+			"tmonitor.h": "c"
+		}
+	}
+}

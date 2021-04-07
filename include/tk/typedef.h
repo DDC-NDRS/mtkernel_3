@@ -62,8 +62,8 @@ typedef W			SZ;		/* Size general */
 typedef INT			ID;		/* ID general */
 typedef	W			MSEC;		/* Time general (millisecond) */
 
-typedef void			(*FP)();	/* Function address general */
-typedef INT			(*FUNCP)();	/* Function address general */
+typedef void			(*FP)(void* exinf);	/* Function address general */
+typedef INT			(*FUNCP)(void);	/* Function address general */
 
 #define LOCAL			static		/* Local symbol definition */
 #define EXPORT					/* Global symbol definition */
