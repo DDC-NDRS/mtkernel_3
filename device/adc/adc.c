@@ -24,12 +24,19 @@
 
 #include "adc.h"
 
+/* Function prototype */
+ER dev_adc_openfn(ID devid, UINT omode, T_MSDI* msdi);
+ER dev_adc_readfn(T_DEVREQ* req, T_MSDI* p_msdi);
+ER dev_adc_closefn(ID devid, UINT option, T_MSDI* msdi);
+ER dev_adc_eventfn(INT evttyp, void* evtinf, T_MSDI* msdi);
+ER dev_adc_writefn(T_DEVREQ* req, T_MSDI* p_msdi);
+
 /*----------------------------------------------------------------------*/
 /* Device driver Control block
  */
 #if TK_SUPPORT_MEMLIB
 
-LOCAL T_ADC_DCB	*dev_adc_cb[DEV_ADC_UNITNM];
+LOCAL T_ADC_DCB* dev_adc_cb[DEV_ADC_UNITNM];
 #define		get_dcb_ptr(unit)	(dev_adc_cb[unit])
 #define		get_dcb_mem(unit,a)	(dev_adc_cb[unit]->a)
 
@@ -44,71 +51,75 @@ LOCAL T_ADC_DCB	dev_adc_cb[DEV_ADC_UNITNM];
 /*----------------------------------------------------------------------*/
 /* Attribute data control
  */
-LOCAL ER read_atr(T_ADC_DCB *p_dcb, T_DEVREQ *req)
-{
-	ER	err	= E_OK;
+LOCAL ER read_atr(T_ADC_DCB* p_dcb, T_DEVREQ* req) {
+    ER err = E_OK;
 
-	switch(req->start) {
-	case TDN_EVENT:			/* MBF ID for event notification */
-		if(req->size >= sizeof(ID)) {
-			*(ID*)req->buf = p_dcb->evtmbfid;
-		} else if(req->size != 0) {
-			err = E_PAR;
-			break;
-		}
-		req->asize = sizeof(ID);
-		break;
-	default:
-		err = E_PAR;
-		break;
-	}
+    switch (req->start) {
+        case TDN_EVENT : /* MBF ID for event notification */
+            if (req->size >= (W)sizeof(ID)) {
+                *(ID*)req->buf = p_dcb->evtmbfid;
+            }
+            else if (req->size != 0) {
+                err = E_PAR;
+                break;
+            }
 
-	return err;
+            req->asize = sizeof(ID);
+            break;
+
+        default :
+            err = E_PAR;
+            break;
+    }
+
+    return err;
 }
 
 
-LOCAL ER write_atr(T_ADC_DCB *p_dcb, T_DEVREQ *req)
-{
-	ER	err	= E_OK;
+LOCAL ER write_atr(T_ADC_DCB* p_dcb, T_DEVREQ* req) {
+    ER err = E_OK;
 
-	switch(req->start) {
-	case TDN_EVENT:			/* MBF ID for event notification */
-		if(req->size >= sizeof(ID)) {
-			p_dcb->evtmbfid = *(ID*)req->buf;
-		} else if(req->size != 0) {
-			err = E_PAR;
-			break;
-		}
-		req->asize = sizeof(ID);
-		break;
-	default:
-		err = E_PAR;
-		break;
-	}
+    switch (req->start) {
+        case TDN_EVENT : /* MBF ID for event notification */
+            if (req->size >= (W)sizeof(ID)) {
+                p_dcb->evtmbfid = *(ID*)req->buf;
+            }
+            else if (req->size != 0) {
+                err = E_PAR;
+                break;
+            }
 
-	return err;
+            req->asize = sizeof(ID);
+            break;
+        default :
+            err = E_PAR;
+            break;
+    }
+
+    return err;
 }
 
 /*----------------------------------------------------------------------*/
 /*　Device-specific data control
  */
-LOCAL ER read_data(T_ADC_DCB *p_dcb, T_DEVREQ *req)
-{
-	W	rtn;
-	ER	err = E_OK;
+LOCAL ER read_data(T_ADC_DCB* p_dcb, T_DEVREQ* req) {
+    W rtn;
+    ER err = E_OK;
 
-	if(req->size) {
-		rtn = dev_adc_llctl( p_dcb->unit, LLD_ADC_READ, req->start, req->size, req->buf);
-		if(rtn > 0) {
-			req->asize = rtn;
-		} else {
-			err = (ER)rtn;
-		}
-	} else {
-		req->asize = dev_adc_llctl( p_dcb->unit, LLD_ADC_RSIZE, req->start, 0, 0);
-	}
+    if (req->size) {
+        rtn = dev_adc_llctl(p_dcb->unit, LLD_ADC_READ, req->start, req->size, req->buf);
+        if (rtn > 0) {
+            req->asize = rtn;
+        }
+        else {
+            err = (ER)rtn;
+        }
+    }
+    else {
+        req->asize = dev_adc_llctl(p_dcb->unit, LLD_ADC_RSIZE, req->start, 0, 0);
+    }
 
-	return err;
+    return err;
 }
 
 
@@ -135,67 +146,66 @@ ER dev_adc_openfn( ID devid, UINT omode, T_MSDI *msdi)
 /*----------------------------------------------------------------------
  * Close Device
  */
-ER dev_adc_closefn( ID devid, UINT option, T_MSDI *msdi)
-{
-	T_ADC_DCB	*p_dcb;
-	ER		err;
+ER dev_adc_closefn(ID devid, UINT option, T_MSDI* msdi) {
+    T_ADC_DCB *p_dcb;
+    ER err;
 
-	p_dcb = (T_ADC_DCB*)(msdi->dmsdi.exinf);
+    p_dcb = (T_ADC_DCB*)(msdi->dmsdi.exinf);
 
-	/* Device Close operation */
-	err =(ER)dev_adc_llctl( p_dcb->unit, LLD_ADC_CLOSE, 0, 0, 0);
-	
-	return err;
+    /* Device Close operation */
+    err = (ER)dev_adc_llctl(p_dcb->unit, LLD_ADC_CLOSE, 0, 0, 0);
+
+    return err;
 }
 
 /*----------------------------------------------------------------------
  * Read Device
  */
-ER dev_adc_readfn( T_DEVREQ *req, T_MSDI *p_msdi)
-{
-	T_ADC_DCB	*p_dcb;
-	ER		err;
+ER dev_adc_readfn(T_DEVREQ* req, T_MSDI* p_msdi) {
+    T_ADC_DCB *p_dcb;
+    ER err;
 
-	p_dcb = (T_ADC_DCB*)(p_msdi->dmsdi.exinf);
+    p_dcb = (T_ADC_DCB*)(p_msdi->dmsdi.exinf);
 
-	if(req->start >= 0) {	// Device specific data
-		if( p_dcb->omode & TD_READ ) {
-			err = read_data( p_dcb, req);
-		} else {
-			err = E_OACV;
-		}
-	} else {		// Device attribute data
-		err = read_atr( p_dcb, req);
-	}
+    if (req->start >= 0) {	// Device specific data
+        if (p_dcb->omode & TD_READ) {
+            err = read_data(p_dcb, req);
+        }
+        else {
+            err = E_OACV;
+        }
+    }
+    else {		// Device attribute data
+        err = read_atr(p_dcb, req);
+    }
 
-	return err;
+    return (err);
 }
 
 /*----------------------------------------------------------------------
  * Write Device
  */
-ER dev_adc_writefn( T_DEVREQ *req, T_MSDI *p_msdi)
-{
-	T_ADC_DCB	*p_dcb;
-	ER		err;
+ER dev_adc_writefn(T_DEVREQ* req, T_MSDI* p_msdi) {
+    T_ADC_DCB* p_dcb;
+    ER err;
 
-	p_dcb = (T_ADC_DCB*)(p_msdi->dmsdi.exinf);
+    p_dcb = (T_ADC_DCB*)(p_msdi->dmsdi.exinf);
 
-	if(req->start >= 0) {	// Device specific data
-		err = E_PAR;
-	} else {		// Device attribute data
-		err = write_atr( p_dcb, req);
-	}
+    if (req->start >= 0) {	// Device specific data
+        err = E_PAR;
+    }
+    else {		// Device attribute data
+        err = write_atr(p_dcb, req);
+    }
 
-	return err;
+    return err;
 }
 
 /*----------------------------------------------------------------------
  * Event Device
  */
-ER dev_adc_eventfn( INT evttyp, void *evtinf, T_MSDI *msdi)
-{
-	return E_NOSPT;
+ER dev_adc_eventfn(INT evttyp, void* evtinf, T_MSDI* msdi) {
+    return E_NOSPT;
 }
 
 /*----------------------------------------------------------------------

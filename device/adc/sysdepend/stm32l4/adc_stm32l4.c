@@ -82,10 +82,10 @@ void adc_inthdr( UINT intno)
  */
 LOCAL UW adc_convert( UINT unit, INT ch, INT size, UW *buf )
 {
-	_UW	*sqr;
-	UINT	sqsz, sqch, sqpos;
-	UW	rtn;
-	ER	err;
+    _UW* sqr;
+    UINT sqsz, sqch, sqpos;
+    UW rtn;
+    ER err;
 
 	if((ch >= ADC_CH_NUM) || (size > ADC_MAX_SQ) || ((ch+size) > ADC_CH_NUM)) return (UW)E_PAR;
 

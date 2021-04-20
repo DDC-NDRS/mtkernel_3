@@ -70,8 +70,8 @@ void tsk2(INT stacd, void* exinf) {
     tk_exd_tsk(); /* Exit Task */
 }
 
-const T_CTSK	ctsk1	= {0, (TA_HLNG | TA_RNG3), &tsk1, 10, 1024, 0};
-const T_CTSK	ctsk2	= {0, (TA_HLNG | TA_RNG3), &tsk2, 11, 1024, 0};
+T_CTSK const ctsk1 = {0, (TA_HLNG | TA_RNG3), &tsk1, 10, 1024, 0};
+T_CTSK const ctsk2 = {0, (TA_HLNG | TA_RNG3), &tsk2, 11, 1024, 0};
 
 /* ----------------------------------------------------------
  *

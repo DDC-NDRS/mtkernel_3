@@ -175,15 +175,15 @@
  * Task creation information 		tk_cre_tsk
  */
 typedef struct t_ctsk {
-	void	*exinf;		/* Extended information */
-	ATR	tskatr;		/* Task attribute */
-	FP	task;		/* Task startup address */
-	PRI	itskpri;	/* Priority at task startup */
-	SZ	stksz;		/* User stack size (byte) */
-#if USE_OBJECT_NAME
-	UB	dsname[OBJECT_NAME_LENGTH];	/* Object name */
-#endif
-	void	*bufptr;	/* User buffer */
+    void* exinf;                /* Extended information */
+    ATR   tskatr;               /* Task attribute */
+    TSKFP task;                 /* Task startup address */
+    PRI   itskpri;              /* Priority at task startup */
+    SZ    stksz;                /* User stack size (byte) */
+    #if USE_OBJECT_NAME
+	UB    dsname[OBJECT_NAME_LENGTH];   /* Object name */
+    #endif
+	void* bufptr; /* User buffer */
 } T_CTSK;
 
 /*
