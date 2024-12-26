@@ -5,4 +5,6 @@
 		"sysdepend.h": "c"
 	},
 	"C_Cpp.dimInactiveRegions": false
+	"C_Cpp.addWorkspaceRootToIncludePath": false,
+	"C_Cpp.intelliSenseEngine": "Tag Parser"
 }
