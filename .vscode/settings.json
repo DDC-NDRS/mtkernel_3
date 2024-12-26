@@ -1,0 +1,8 @@
+{
+	"files.associations": {
+		"kernel.h": "c",
+		"tkernel.h": "c",
+		"sysdepend.h": "c"
+	},
+	"C_Cpp.dimInactiveRegions": false
+}

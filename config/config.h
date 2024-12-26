@@ -1,12 +1,12 @@
 /*
  *----------------------------------------------------------------------
- *    micro T-Kernel 3.00.07.B0
+ *    micro T-Kernel 3.00.08.B0
  *
- *    Copyright (C) 2006-2023 by Ken Sakamura.
+ *    Copyright (C) 2006-2024 by Ken Sakamura.
  *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
  *
- *    Released by TRON Forum(http://www.tron.org) at 2023/11.
+ *    Released by TRON Forum(http://www.tron.org) at 2024/12.
  *
  *----------------------------------------------------------------------
  */
@@ -18,16 +18,17 @@
 
 #ifndef __TK_CONFIG__
 #define __TK_CONFIG__
-
 /*---------------------------------------------------------------------- */
 /*  Target Name
 	Define the system target name. Alternatively, define the target name 
 	in the development environment.
+
+	Example
+	  #define _IOTE_M367_
+	  #define _IOTE_RX231_
+	  #define _IOTE_STM32L4_
+	  #define _IOTE_RZA2M_
  */
-//#define _IOTE_M367_
-//#define _IOTE_RX231_
-#define _IOTE_STM32L4_
-//#define _IOTE_RZA2M_
 
 /*---------------------------------------------------------------------- */
 /* SYSCONF : micro T-Kernel system configuration
@@ -117,6 +118,19 @@
 #define	USE_USERINIT		(0)	/*  1: Use UserInit  0: Do not use UserInit */
 #define RI_USERINIT		(0)	/* UserInit start address */
 
+/* ------------------------------------------------------------------------ */
+/*
+ * Static allocation of system memory
+ *     Enabling this setting statically allocates system memory space as variables.
+ */
+#define USE_STATIC_SYS_MEM	(0)		// 1:Valid   0:invalid
+#define SYSTEM_MEM_SIZE		(15*1024)	// Memory size to statically allocate.
+
+/* ------------------------------------------------------------------------ */
+/*
+ *  System memory area information (For debugging)
+ */
+#define USE_DEBUG_SYSMEMINFO   (1)		// 1:Valid   0:invalid
 
 /*---------------------------------------------------------------------- */
 /* Debugger support function
@@ -143,6 +157,8 @@
 #define	USE_FPU			(0)	/* Use FPU */
 #define	USE_DSP			(0)	/* Use DSP */
 
+#define	ALWAYS_FPU_ATR		(1)	/* Always set the TA_FPU attribute on all tasks */
+
 /*---------------------------------------------------------------------- */
 /* Use Physical timer.
  *  1: Valid  0: Invalid
@@ -160,8 +176,25 @@
  *	Use Standard C include file
  */
 #define USE_STDINC_STDDEF	(1)	/* Use <stddef.h> */
+#define USE_STDINC_STDINT	(1)	/* Use <stdint.h> */
 
-#define USE_STDINC_STDINT	(1) /* Use <stdint.h> */
+/*---------------------------------------------------------------------- */
+/*
+ *	Don't use reset handler (for BSP)
+ */
+#define DONT_USE_RESETHDR	(0)
+
+/*---------------------------------------------------------------------- */
+/*
+ *	Add a prefix to the main function (for BSP)
+ */
+#define ADD_PREFIX_MAIN_FUNC	(0)
+
+/* ------------------------------------------------------------------------ */
+/*
+ *  Stack pointer monitoring function
+ */
+#define USE_SPMON		(0)	// 1:Valid   0:invalid
 
 /*---------------------------------------------------------------------- */
 /*
